@@ -1,9 +1,8 @@
 // app/dashboard/page.tsx
 import React from "react";
-import { getData } from "@/app/utils/actions"; // Importing the data fetching function
-import Filters from "../components/Filters"; // Importing the Filters component
-import ProductCard from "../components/ProductCard"; // Importing ProductCard to display products
-// Import the AddToCartButton (Client Component)
+import { getData } from "@/app/utils/actions";
+import Filters from "../components/Filters";
+import ProductCard from "../components/ProductCard";
 
 interface Product {
   id: number;
@@ -17,32 +16,28 @@ interface Product {
 const DashboardPage = async ({
   searchParams,
 }: {
-  searchParams: { search: string; category: string; sort: string };
+  searchParams: { search?: string; category?: string; sort?: string };
 }) => {
-  const { search, category, sort } = searchParams;
+  const { search, category, sort } = await searchParams;
 
-  const searchQuery = search || ""; // Retrieve the search query from the URL
-  const selectedCategory = category || ""; // Category filter
-  const sortOption = sort || ""; // Sort option (asc/desc)
+  const searchQuery = search || "";
+  const selectedCategory = category || "";
+  const sortOption = sort || "";
 
-  // Fetch the product data from the server
   const products: Product[] = await getData();
 
-  // Filter products based on search query
   let filteredProducts = products.filter(
     (product) =>
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Filter by category
   if (selectedCategory) {
     filteredProducts = filteredProducts.filter(
       (product) => product.category === selectedCategory
     );
   }
 
-  // Sort products by price
   if (sortOption === "asc") {
     filteredProducts = filteredProducts.sort((a, b) => a.price - b.price);
   } else if (sortOption === "desc") {
@@ -51,10 +46,8 @@ const DashboardPage = async ({
 
   return (
     <div className="container">
-      {/* Filters Component */}
       <Filters selectedCategory={selectedCategory} sortOption={sortOption} />
 
-      {/* Product List */}
       <div className="product-list">
         {filteredProducts.map((product) => (
           <div key={product.id} className="product-card">

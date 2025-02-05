@@ -1,6 +1,6 @@
 // app/product/[id]/page.tsx
 import React from "react";
-import { getData } from "@/app/utils/actions"; // Assuming getData is the data-fetching function
+import { getData } from "@/app/utils/actions";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -16,12 +16,12 @@ interface Product {
 const ProductDetailPage: React.FC<{ params: { id: string } }> = async ({
   params,
 }) => {
-  const productId = parseInt(params.id); // Extract the ID from the URL params
-  const products: Product[] = await getData(); // Fetch the product data
+  const productId = parseInt(params.id);
+  const products: Product[] = await getData();
   const product = products.find((p) => p.id === productId);
 
   if (!product) {
-    return <p>Product not found</p>; // Show a message if the product is not found
+    return <p>Product not found</p>;
   }
 
   return (
@@ -31,8 +31,8 @@ const ProductDetailPage: React.FC<{ params: { id: string } }> = async ({
         <Image
           src={product.image}
           alt={product.name}
-          width={500} // Adjust the size
-          height={400} // Adjust the size
+          width={500}
+          height={400}
           objectFit="cover"
         />
         <p>{product.description}</p>

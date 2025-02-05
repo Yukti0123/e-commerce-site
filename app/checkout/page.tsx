@@ -1,5 +1,3 @@
-// app/checkout/page.tsx (Server Component)
-
 import React from "react";
 import CheckoutClient from "../components/CheckoutClient";
 

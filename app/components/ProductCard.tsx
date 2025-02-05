@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import Link from "next/link"; // For navigating to product detail page
+import Link from "next/link";
 import AddToCartButton from "../components/AddToCart";
 
 interface Product {
@@ -19,8 +19,8 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         <Image
           src={product.image}
           alt={product.name}
-          width={300} // Adjust width as needed
-          height={200} // Adjust height as needed
+          width={300}
+          height={200}
           objectFit="cover"
         />
       </div>
@@ -30,7 +30,6 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         <p>{product.description}</p>
         <span>${product.price}</span>
 
-        {/* View Detail Button */}
         <Link href={`/product/${product.id}`} passHref>
           <button className="view-detail-btn">View Detail</button>
         </Link>

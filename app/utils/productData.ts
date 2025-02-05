@@ -6,7 +6,7 @@ export const products = [
     id: 1,
     name: "Headphone",
     description: "Noise-cancelling over-ear headphones.",
-    image: "/products/Headphone.jpg", // Image path for Next.js Image component
+    image: "/products/Headphone.jpg", 
     category: "Headphones",
     price: 100,
   },

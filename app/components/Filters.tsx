@@ -12,11 +12,10 @@ interface FiltersProps {
 const Filters: React.FC<FiltersProps> = ({ selectedCategory, sortOption }) => {
   const router = useRouter();
 
-  // Function to update the URL with the new search/filter parameters
   const updateUrl = (key: string, value: string) => {
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set(key, value);
-    router.push("?" + urlParams.toString()); // Update URL without refreshing the page
+    router.push("?" + urlParams.toString());
   };
 
   return (

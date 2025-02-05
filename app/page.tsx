@@ -2,7 +2,6 @@
 import { redirect } from "next/navigation";
 
 const HomePage = () => {
-  // Redirect immediately when this page is hit (server-side)
   redirect("/dashboard");
 
   return (

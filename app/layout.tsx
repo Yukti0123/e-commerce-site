@@ -13,9 +13,9 @@ const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <title>My E-Commerce Site</title>
       </head>
       <body>
-        <NavigationBar />{" "}
-        {/* Render Navigation Bar as a server-side component */}
-        {children} {/* Render dynamic child components like DashboardPage */}
+        <NavigationBar />
+
+        {children}
         <Footer />
       </body>
     </html>
