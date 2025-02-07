@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
-// Types
 interface User {
   id: number;
   name: string;
@@ -50,7 +49,8 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
     email: "",
   });
 
-  // Load order history from localStorage
+  const [isEditable, setIsEditable] = useState(false);
+
   useEffect(() => {
     try {
       const storedOrderHistory = localStorage.getItem("orderHistory");
@@ -62,7 +62,6 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
     }
   }, []);
 
-  // Handle profile input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUpdatedUser((prevUser) => ({
@@ -71,7 +70,6 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
     }));
   };
 
-  // Handle payment method input changes
   const handlePaymentInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -85,13 +83,11 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
     setEditedPaymentMethods(updatedPaymentMethods);
   };
 
-  // Save profile changes
   const handleSaveChanges = () => {
     alert("Profile updated!");
-    // Add logic to save updatedUser to backend or state management
+    setIsEditable(false);
   };
 
-  // Save payment methods
   const handleSavePaymentMethods = () => {
     alert("Payment methods updated!");
     try {
@@ -104,7 +100,6 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
     }
   };
 
-  // Add new payment method
   const handleAddPaymentMethod = () => {
     if (
       newPaymentMethod.type &&
@@ -124,28 +119,33 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
 
   return (
     <div className="profile-page">
-      {/* Profile Info */}
       <div className="profile-info">
         <h2>Profile Info</h2>
         <form onSubmit={(e) => e.preventDefault()}>
           {Object.entries(updatedUser).map(([key, value]) => (
             <div key={key}>
               <label>{key.charAt(0).toUpperCase() + key.slice(1)}</label>
-              <input
-                type={key === "email" ? "email" : "text"}
-                name={key}
-                value={value || ""}
-                onChange={handleInputChange}
-              />
+              {isEditable ? (
+                <input
+                  type={key === "email" ? "email" : "text"}
+                  name={key}
+                  value={value || ""}
+                  onChange={handleInputChange}
+                />
+              ) : (
+                <p>{value || "N/A"}</p>
+              )}
             </div>
           ))}
-          <button type="button" onClick={handleSaveChanges}>
-            Save Changes
+          <button
+            type="button"
+            onClick={isEditable ? handleSaveChanges : () => setIsEditable(true)}
+          >
+            {isEditable ? "Save Changes" : "Edit"}
           </button>
         </form>
       </div>
 
-      {/* Order History */}
       <div className="order-history">
         <h2>Order History</h2>
         {orderHistory.length === 0 ? (
@@ -172,7 +172,6 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
         )}
       </div>
 
-      {/* Add Payment Method */}
       <div className="add-payment-method">
         <h2>Add Payment Method</h2>
         <div>
@@ -223,7 +222,6 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
         </button>
       </div>
 
-      {/* Payment Methods */}
       <div className="payment-methods">
         <h2>Payment Methods</h2>
         {editedPaymentMethods.map((payment, index) => (

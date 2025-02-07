@@ -3,15 +3,7 @@ import React from "react";
 import { getData } from "@/app/utils/actions";
 import Link from "next/link";
 import Image from "next/image";
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
-  category: string;
-  price: number;
-}
+import Product from "@/app/Interfaces/Product";
 
 const ProductDetailPage: React.FC<{ params: { id: string } }> = async ({
   params,

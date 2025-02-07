@@ -1,15 +1,7 @@
 "use client";
 
 import React from "react";
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
-  category: string;
-  price: number;
-}
+import Product from "../Interfaces/Product";
 
 const AddToCartButton: React.FC<{ product: Product }> = ({ product }) => {
   const addToCart = () => {

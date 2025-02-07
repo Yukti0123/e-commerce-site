@@ -2,15 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import AddToCartButton from "../components/AddToCart";
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
-  category: string;
-  price: number;
-}
+import Product from "../Interfaces/Product";
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   return (

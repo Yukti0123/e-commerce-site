@@ -14,7 +14,7 @@ const ProfilePage: React.FC = async () => {
       ? JSON.parse(localStorage.getItem("orderHistory") || "[]")
       : [];
 
-  // Mock payment methods (this would also be fetched from a payment provider or database)
+
   const paymentMethods = [
     { id: 1, type: "Credit Card", lastFour: "1234" },
     { id: 2, type: "PayPal", email: "john.doe@paypal.com" },
@@ -25,7 +25,7 @@ const ProfilePage: React.FC = async () => {
       <h1>User Profile</h1>
       <ProfilePageClient
         user={user}
-        orderHistory={orderHistory} // Pass the dynamic order history
+        orderHistory={orderHistory} 
         paymentMethods={paymentMethods}
       />
     </div>

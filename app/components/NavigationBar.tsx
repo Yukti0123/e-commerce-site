@@ -1,7 +1,6 @@
 // app/components/NavigationBar.tsx
 import React from "react";
 import Link from "next/link";
-import ProfilePage from "../Profile/page";
 
 const NavigationBar: React.FC = () => {
   return (
