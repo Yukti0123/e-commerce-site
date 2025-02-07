@@ -1,35 +1,35 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
-interface User {
+type User = {
   id: number;
   name: string;
   email: string;
   address: string;
   phone?: string;
   profilePicture?: string;
-}
+};
 
-interface Order {
+type Order = {
   items: string[];
   id: number;
   date: string;
   total: number;
   status: string;
-}
+};
 
-interface PaymentMethod {
+type PaymentMethod = {
   id: number;
   type: string;
   lastFour?: string;
   email?: string;
-}
+};
 
-interface ProfilePageClientProps {
+type ProfilePageClientProps = {
   user: User;
   orderHistory: Order[];
   paymentMethods: PaymentMethod[];
-}
+};
 
 const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
   user,
