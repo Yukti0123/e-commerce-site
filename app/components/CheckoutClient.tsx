@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 
 interface CartItem {
@@ -28,11 +27,31 @@ const CheckoutClient: React.FC = () => {
   }, []);
 
   const handleCheckout = async () => {
-    alert("Proceeding with checkout...");
+    // Create the order object from the cart data
+    const order = {
+      id: new Date().getTime(), // Unique order ID
+      date: new Date().toISOString(),
+      total: totalPrice,
+      status: "Completed", // You can modify this status as needed
+      items: cartItems.map((item) => item.name), // Get item names
+    };
 
+    // Retrieve existing order history from localStorage (or create a new one)
+    const orderHistory = localStorage.getItem("orderHistory");
+    const orders = orderHistory ? JSON.parse(orderHistory) : [];
+    
+    // Add the new order to the order history
+    orders.push(order);
+
+    // Save the updated order history back to localStorage
+    localStorage.setItem("orderHistory", JSON.stringify(orders));
+
+    // Clear the cart after checkout
     localStorage.removeItem("cart");
     setCartItems([]);
     setTotalPrice(0);
+
+    alert("Checkout successful!");
   };
 
   return (

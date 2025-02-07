@@ -1,6 +1,7 @@
 // app/components/NavigationBar.tsx
 import React from "react";
 import Link from "next/link";
+import ProfilePage from "../Profile/page";
 
 const NavigationBar: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const NavigationBar: React.FC = () => {
 
       <nav>
         <Link href="/cart">Go to Cart</Link>
+        <Link href="/Profile">Profile</Link>
       </nav>
     </div>
   );
