@@ -9,7 +9,8 @@ const NavigationBar: React.FC = () => {
         <h1>My E-Commerce Store</h1>
       </header>
 
-      <form action="/dashboard" method="get">
+      
+      <form action="/" method="get">
         <input type="text" name="search" placeholder="Search products..." />
         <button type="submit">Search</button>
       </form>

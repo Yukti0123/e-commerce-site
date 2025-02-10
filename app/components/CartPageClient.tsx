@@ -48,7 +48,7 @@ const CartPageClient: React.FC = () => {
   };
 
   const HandleGoToDashboard = () => {
-    redirect("/dashboard");
+    redirect("/");
   };
 
   const handleQuantityChange = (id: number, value: string) => {
@@ -100,6 +100,5 @@ const CartPageClient: React.FC = () => {
     </div>
   );
 };
-
 
 export default CartPageClient;

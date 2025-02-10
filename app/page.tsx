@@ -1,9 +1,9 @@
-// app/dashboard/page.tsx
+// app/page.tsx
 import React from "react";
-import { getData } from "@/app/utils/actions";
+import { fetchProducts, fetchCategories } from "@/app/utils/productData"; 
 import Filters from "./components/Filters";
 import ProductCard from "./components/ProductCard";
-import Product from "./Interfaces/Product";
+import Product from "@/app/Interfaces/Product";
 
 const DashboardPage = async ({
   searchParams,
@@ -16,8 +16,10 @@ const DashboardPage = async ({
   const selectedCategory = category || "";
   const sortOption = sort || "";
 
-  const products: Product[] = await getData();
+  const products: Product[] = await fetchProducts();
+  const categories: string[] = await fetchCategories();
 
+ 
   let filteredProducts = products.filter(
     (product) =>
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -38,7 +40,11 @@ const DashboardPage = async ({
 
   return (
     <div className="container">
-      <Filters selectedCategory={selectedCategory} sortOption={sortOption} />
+      <Filters
+        selectedCategory={selectedCategory}
+        sortOption={sortOption}
+        categories={categories}
+      />
 
       <div className="product-list">
         {filteredProducts.map((product) => (

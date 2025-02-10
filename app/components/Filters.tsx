@@ -7,15 +7,29 @@ import { useRouter } from "next/navigation";
 interface FiltersProps {
   selectedCategory: string;
   sortOption: string;
+  categories: string[];
 }
 
-const Filters: React.FC<FiltersProps> = ({ selectedCategory, sortOption }) => {
+const Filters: React.FC<FiltersProps> = ({
+  selectedCategory,
+  sortOption,
+  categories,
+}) => {
   const router = useRouter();
 
-  const updateUrl = (key: string, value: string) => {
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set(key, value);
-    router.push("?" + urlParams.toString());
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = e.target.value;
+    const params = new URLSearchParams(window.location.search);
+    params.set("category", selectedValue);
+    router.push("?" + params.toString()); 
+  };
+
+  
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = e.target.value;
+    const params = new URLSearchParams(window.location.search);
+    params.set("sort", selectedValue);
+    router.push("?" + params.toString()); 
   };
 
   return (
@@ -25,13 +39,14 @@ const Filters: React.FC<FiltersProps> = ({ selectedCategory, sortOption }) => {
         <select
           id="category"
           value={selectedCategory}
-          onChange={(e) => updateUrl("category", e.target.value)}
+          onChange={handleCategoryChange}
         >
           <option value="">All Categories</option>
-          <option value="Headphones">Headphones</option>
-          <option value="Cameras">Cameras</option>
-          <option value="Laptops">Laptops</option>
-          <option value="Accessories">Accessories</option>
+          {categories.map((category, index) => (
+            <option key={index} value={category}>
+              {category}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -40,7 +55,7 @@ const Filters: React.FC<FiltersProps> = ({ selectedCategory, sortOption }) => {
         <select
           id="sort"
           value={sortOption}
-          onChange={(e) => updateUrl("sort", e.target.value)}
+          onChange={handleSortChange}
         >
           <option value="">Select</option>
           <option value="asc">Price: Low to High</option>

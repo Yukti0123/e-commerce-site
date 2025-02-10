@@ -5,15 +5,21 @@ import AddToCartButton from "../components/AddToCart";
 import Product from "../Interfaces/Product";
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
+  const imageUrl = product.images[0]; 
+
+  
+  const validImageUrl = imageUrl?.replace(/[\[\]"]+/g, ''); 
+
   return (
     <div className="card">
       <div className="image-container">
+        
         <Image
-          src={product.image}
+          src={validImageUrl}  
           alt={product.name}
           width={300}
           height={200}
-          objectFit="cover"
+          style={{ objectFit: "cover" }}  
         />
       </div>
 

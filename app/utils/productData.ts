@@ -1,53 +1,62 @@
 // app/utils/productData.ts
 
+const removeDuplicateProducts = (products: any[]): any[] => {
+  const seen = new Set<number>(); 
+  return products.filter((product) => {
+    if (seen.has(product.id)) {
+      return false;
+    }
+    seen.add(product.id); 
+    return true; 
+  });
+};
 
-export const products = [
-  {
-    id: 1,
-    name: "Headphone",
-    description: "Noise-cancelling over-ear headphones.",
-    image: "/products/Headphone.jpg", 
-    category: "Headphones",
-    price: 100,
-  },
-  {
-    id: 2,
-    name: "Camera",
-    description: "High-quality DSLR with zoom lens",
-    image: "/products/Camera.jpg",
-    category: "Cameras",
-    price: 500,
-  },
-  {
-    id: 3,
-    name: "Earbuds",
-    description: "Wireless Bluetooth earbuds for on-the-go.",
-    image: "/products/Earbuds.jpg",
-    category: "Headphones",
-    price: 60,
-  },
-  {
-    id: 4,
-    name: "DSLR",
-    description: "DSLR camera with high resolution.",
-    image: "/products/DSLR.jpg",
-    category: "Cameras",
-    price: 700,
-  },
-  {
-    id: 5,
-    name: "Macbook",
-    description: "Macbook for all your professional needs.",
-    image: "/products/Macbook.jpg",
-    category: "Laptops",
-    price: 1200,
-  },
-  {
-    id: 6,
-    name: "Mouse",
-    description: "Wireless mouse with ergonomic design.",
-    image: "/products/Mouse.jpg",
-    category: "Accessories",
-    price: 25,
-  },
-];
+export const fetchProducts = async () => {
+  try {
+    const response = await fetch("https://api.escuelajs.co/api/v1/products"); 
+    const data = await response.json();
+
+
+    const uniqueData = removeDuplicateProducts(data);
+
+    
+    const products = uniqueData.map((item: any) => ({
+      id: item.id,
+      name: item.title, 
+      description: item.description, 
+      images: item.images || [], 
+      category: item.category.name, 
+      price: item.price,
+    }));
+
+    return products;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
+};
+
+export const fetchCategories = async () => {
+  try {
+    const response = await fetch("https://api.escuelajs.co/api/v1/products"); 
+    const data = await response.json();
+
+    
+    const uniqueData = removeDuplicateProducts(data);
+
+  
+    const categories = new Set<string>();
+
+    uniqueData.forEach((item: any) => {
+      if (item.category && item.category.name) {
+        categories.add(item.category.name); 
+      }
+    });
+
+    
+    return Array.from(categories);
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return [];
+  }
+};

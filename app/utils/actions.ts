@@ -2,9 +2,9 @@
 
 "use server";
 
-import { products } from "./productData";
+import { fetchProducts } from "./productData";
+import Product from "../Interfaces/Product";
 
-
-export const getData = async () => {
-  return products;  
+export const getData = async (): Promise<Product[]> => {
+  return await fetchProducts(); 
 };
