@@ -10,8 +10,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   // Clean up image URL by removing unwanted characters (quotes, square brackets)
   const validImageUrl = imageUrl?.replace(/[\[\]"]+/g, '');
 
-  // Log the URL to check if it's valid
-  console.log("Image URL:", validImageUrl);
+  
 
   // Optional: If validImageUrl is invalid or empty, fallback to default image
   const imageSrc = validImageUrl && (validImageUrl.startsWith('http') || validImageUrl.startsWith('https'))

@@ -1,23 +1,37 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import CartItem from "../Interfaces/CartItem";
 
 const CheckoutClient: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedCart = localStorage.getItem("cart");
-    if (storedCart) {
-      const items: CartItem[] = JSON.parse(storedCart);
-      setCartItems(items);
+    // Fetch the cart items from the server (instead of localStorage)
+    const fetchCartData = async () => {
+      try {
+        const response = await fetch("/api/cart"); // Fetch cart from the server
+        if (response.ok) {
+          const data = await response.json();
+          setCartItems(data);
 
-      const total = items.reduce(
-        (sum: number, item: CartItem) => sum + item.price * item.quantity,
-        0
-      );
-      setTotalPrice(total);
-    }
+          const total = data.reduce(
+            (sum: number, item: CartItem) => sum + item.price * item.quantity,
+            0
+          );
+          setTotalPrice(total);
+        } else {
+          setError("Failed to fetch cart data");
+        }
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+        setError("Error fetching cart data");
+      }
+    };
+
+    fetchCartData();
   }, []);
 
   const handleCheckout = async () => {
@@ -28,20 +42,34 @@ const CheckoutClient: React.FC = () => {
       status: "Completed",
       items: cartItems.map((item) => item.name),
     };
-
-    const orderHistory = localStorage.getItem("orderHistory");
-    const orders = orderHistory ? JSON.parse(orderHistory) : [];
-
-    orders.push(order);
-
-    localStorage.setItem("orderHistory", JSON.stringify(orders));
-
-    localStorage.removeItem("cart");
-    setCartItems([]);
-    setTotalPrice(0);
-
-    alert("Checkout successful!");
+  
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(order),
+      });
+  
+      if (response.ok) {
+        console.log("Order saved successfully!");
+        setCartItems([]);
+        setTotalPrice(0);
+        alert("Checkout successful!");
+  
+        // Send the updated order to the profile page component
+        // This can be done through state management or API calls in the profile page
+      } else {
+        setError("Failed to place the order");
+        console.error("Failed to place the order");
+      }
+    } catch (error) {
+      console.error("Error during checkout:", error);
+      setError("Error during checkout");
+    }
   };
+  
 
   return (
     <div className="checkout">
@@ -60,6 +88,11 @@ const CheckoutClient: React.FC = () => {
             ))}
           </div>
           <h3>Total: ${totalPrice}</h3>
+          {error && (
+            <p className="error-message" style={{ color: "red" }}>
+              {error}
+            </p>
+          )}
           <button onClick={handleCheckout}>Complete Purchase</button>
         </>
       )}

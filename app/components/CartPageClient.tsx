@@ -7,17 +7,50 @@ const CartPageClient: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch the cart data from the server when the component mounts
   useEffect(() => {
-    const storedCart = localStorage.getItem("cart");
-    if (storedCart) {
-      setCartItems(JSON.parse(storedCart));
-    }
+    const fetchCartData = async () => {
+      try {
+        const response = await fetch("/api/cart");
+        if (response.ok) {
+          const data = await response.json();
+          setCartItems(data);
+        } else {
+          console.error("Failed to fetch cart data");
+        }
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+      }
+    };
+
+    fetchCartData();
   }, []);
+
+  // Persist the cart data to the server via API
+  const persistCartData = async (cartItems: CartItem[]) => {
+    try {
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(cartItems),
+      });
+
+      if (response.ok) {
+        console.log("Cart data saved successfully!");
+      } else {
+        throw new Error("Failed to save cart data");
+      }
+    } catch (error) {
+      console.error("Error saving cart data:", error);
+    }
+  };
 
   const removeFromCart = (id: number) => {
     const updatedCart = cartItems.filter((item) => item.id !== id);
     setCartItems(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    persistCartData(updatedCart); // Persist to the server
   };
 
   const updateQuantity = (id: number, quantity: number) => {
@@ -35,7 +68,7 @@ const CartPageClient: React.FC = () => {
       item.id === id ? { ...item, quantity } : item
     );
     setCartItems(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    persistCartData(updatedCart); // Persist to the server
   };
 
   const totalPrice = cartItems.reduce(
@@ -89,7 +122,7 @@ const CartPageClient: React.FC = () => {
             <p className="error-message" style={{ color: "red" }}>
               {error}
             </p>
-          )}{" "}
+          )}
           <div className="cart-summary">
             <h3>Total Price: ${totalPrice}</h3>
           </div>

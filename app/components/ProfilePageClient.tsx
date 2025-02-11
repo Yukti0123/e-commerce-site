@@ -27,7 +27,6 @@ type PaymentMethod = {
 
 type ProfilePageClientProps = {
   user: User;
-  orderHistory: Order[];
   paymentMethods: PaymentMethod[];
 };
 
@@ -52,15 +51,22 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
   const [isEditable, setIsEditable] = useState(false);
 
   useEffect(() => {
-    try {
-      const storedOrderHistory = localStorage.getItem("orderHistory");
-      if (storedOrderHistory) {
-        setOrderHistory(JSON.parse(storedOrderHistory));
+    const fetchOrderHistory = async () => {
+      try {
+        // Replace this URL with your API endpoint
+        const response = await fetch("/api/orders");
+        if (!response.ok) {
+          throw new Error("Failed to fetch order history");
+        }
+        const data = await response.json();
+        setOrderHistory(data); // Assuming the API returns an array of orders
+      } catch (error) {
+        console.error("Error fetching order history:", error);
       }
-    } catch (error) {
-      console.error("Failed to load order history:", error);
-    }
-  }, []);
+    };
+
+    fetchOrderHistory();
+  }, []); // Fetch orders when the component mounts
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -117,6 +123,29 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
     }
   };
 
+  const handleClearOrders = async () => {
+    try {
+      // Send a request to the backend to clear orders
+      const response = await fetch("/api/orders", {
+        method: "DELETE", // Assuming you're using DELETE method
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to clear orders from backend");
+      }
+
+      // Clear the state after successful response from the backend
+      setOrderHistory([]); // Clear orders from frontend
+      alert("All orders have been cleared from your account.");
+    } catch (error) {
+      console.error("Error clearing orders:", error);
+      alert("Failed to clear orders.");
+    }
+  };
+
   return (
     <div className="profile-page">
       <div className="profile-info">
@@ -170,8 +199,12 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
             ))}
           </ul>
         )}
+        <button type="button" onClick={handleClearOrders}>
+          Clear All Orders
+        </button>
       </div>
 
+      {/* Add Payment Method Section */}
       <div className="add-payment-method">
         <h2>Add Payment Method</h2>
         <div>
@@ -222,6 +255,7 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
         </button>
       </div>
 
+      {/* Payment Methods Section */}
       <div className="payment-methods">
         <h2>Payment Methods</h2>
         {editedPaymentMethods.map((payment, index) => (
