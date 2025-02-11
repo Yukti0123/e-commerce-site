@@ -7,7 +7,7 @@ const CartPageClient: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch the cart data from the server when the component mounts
+  
   useEffect(() => {
     const fetchCartData = async () => {
       try {
@@ -26,7 +26,7 @@ const CartPageClient: React.FC = () => {
     fetchCartData();
   }, []);
 
-  // Persist the cart data to the server via API
+  
   const persistCartData = async (cartItems: CartItem[]) => {
     try {
       const response = await fetch("/api/cart", {
@@ -50,7 +50,7 @@ const CartPageClient: React.FC = () => {
   const removeFromCart = (id: number) => {
     const updatedCart = cartItems.filter((item) => item.id !== id);
     setCartItems(updatedCart);
-    persistCartData(updatedCart); // Persist to the server
+    persistCartData(updatedCart); 
   };
 
   const updateQuantity = (id: number, quantity: number) => {
@@ -68,7 +68,7 @@ const CartPageClient: React.FC = () => {
       item.id === id ? { ...item, quantity } : item
     );
     setCartItems(updatedCart);
-    persistCartData(updatedCart); // Persist to the server
+    persistCartData(updatedCart); 
   };
 
   const totalPrice = cartItems.reduce(

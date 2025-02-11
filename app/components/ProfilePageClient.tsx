@@ -27,7 +27,9 @@ type PaymentMethod = {
 
 type ProfilePageClientProps = {
   user: User;
+
   paymentMethods: PaymentMethod[];
+  orderHistory: Order[];
 };
 
 const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
@@ -53,20 +55,19 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
   useEffect(() => {
     const fetchOrderHistory = async () => {
       try {
-        // Replace this URL with your API endpoint
         const response = await fetch("/api/orders");
         if (!response.ok) {
           throw new Error("Failed to fetch order history");
         }
         const data = await response.json();
-        setOrderHistory(data); // Assuming the API returns an array of orders
+        setOrderHistory(data);
       } catch (error) {
         console.error("Error fetching order history:", error);
       }
     };
 
     fetchOrderHistory();
-  }, []); // Fetch orders when the component mounts
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -125,9 +126,8 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
 
   const handleClearOrders = async () => {
     try {
-      // Send a request to the backend to clear orders
       const response = await fetch("/api/orders", {
-        method: "DELETE", // Assuming you're using DELETE method
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
@@ -137,8 +137,7 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
         throw new Error("Failed to clear orders from backend");
       }
 
-      // Clear the state after successful response from the backend
-      setOrderHistory([]); // Clear orders from frontend
+      setOrderHistory([]);
       alert("All orders have been cleared from your account.");
     } catch (error) {
       console.error("Error clearing orders:", error);

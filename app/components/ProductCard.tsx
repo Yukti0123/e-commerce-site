@@ -7,21 +7,22 @@ import Product from "../Interfaces/Product";
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const imageUrl = product.images[0]; 
 
-  // Clean up image URL by removing unwanted characters (quotes, square brackets)
-  const validImageUrl = imageUrl?.replace(/[\[\]"]+/g, '');
+  const validImageUrl = imageUrl
+    ?.replace(/[\[\]"]+/g, '') 
+    .replace(/ /g, '%20'); 
 
-  // Optional: If validImageUrl is invalid or empty, fallback to default image
+
   const imageSrc = validImageUrl && (validImageUrl.startsWith('http') || validImageUrl.startsWith('https'))
     ? validImageUrl
-    : '/images/default-image.png';  // Fallback image
+    : '/images/default-image.png';  
 
   return (
     <div className="card">
       <div className="image-container">
-        {/* Ensure the image source is valid */}
+        
         <Image
           src={imageSrc}
-          alt={product.name}
+          alt={product.name} 
           width={300}
           height={200}
           style={{ objectFit: "cover" }}
@@ -32,7 +33,6 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         <h3>{product.name}</h3>
         <p>{product.description}</p>
 
-        {/* Add class for price */}
         <div className="price">${product.price}</div>
 
         {/* Button Container */}

@@ -8,7 +8,7 @@ const AddToCartButton: React.FC<{ product: Product }> = ({ product }) => {
 
   const addToCart = async () => {
     try {
-      // Fetch the current cart data from the server
+      
       const response = await fetch("/api/cart");
 
       if (!response.ok) {
@@ -17,18 +17,18 @@ const AddToCartButton: React.FC<{ product: Product }> = ({ product }) => {
 
       const cartItems = await response.json();
 
-      // Check if the product is already in the cart and update quantity
+      
       const existingProductIndex = cartItems.findIndex((item: any) => item.id === product.id);
 
       if (existingProductIndex >= 0) {
-        // Increment quantity if product is already in cart
+        
         cartItems[existingProductIndex].quantity += 1;
       } else {
-        // Add the new product with quantity 1
+        
         cartItems.push({ ...product, quantity: 1 });
       }
 
-      // Send the updated cart data back to the server
+      
       const updateResponse = await fetch("/api/cart", {
         method: "POST",
         headers: {

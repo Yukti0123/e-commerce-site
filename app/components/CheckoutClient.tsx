@@ -9,10 +9,10 @@ const CheckoutClient: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch the cart items from the server (instead of localStorage)
+    
     const fetchCartData = async () => {
       try {
-        const response = await fetch("/api/cart"); // Fetch cart from the server
+        const response = await fetch("/api/cart"); 
         if (response.ok) {
           const data = await response.json();
           setCartItems(data);
@@ -58,8 +58,7 @@ const CheckoutClient: React.FC = () => {
         setTotalPrice(0);
         alert("Checkout successful!");
   
-        // Send the updated order to the profile page component
-        // This can be done through state management or API calls in the profile page
+        
       } else {
         setError("Failed to place the order");
         console.error("Failed to place the order");
