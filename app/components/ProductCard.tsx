@@ -10,8 +10,6 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   // Clean up image URL by removing unwanted characters (quotes, square brackets)
   const validImageUrl = imageUrl?.replace(/[\[\]"]+/g, '');
 
-  
-
   // Optional: If validImageUrl is invalid or empty, fallback to default image
   const imageSrc = validImageUrl && (validImageUrl.startsWith('http') || validImageUrl.startsWith('https'))
     ? validImageUrl
@@ -33,13 +31,18 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
       <div className="product-details">
         <h3>{product.name}</h3>
         <p>{product.description}</p>
-        <span>${product.price}</span>
 
-        <Link href={`/product/${product.id}`} passHref>
-          <button className="view-detail-btn">View Detail</button>
-        </Link>
+        {/* Add class for price */}
+        <div className="price">${product.price}</div>
 
-        <AddToCartButton product={product} />
+        {/* Button Container */}
+        <div className="button-container">
+          <Link href={`/product/${product.id}`} passHref>
+            <button className="view-detail-btn">View Detail</button>
+          </Link>
+
+          <AddToCartButton product={product} />
+        </div>
       </div>
     </div>
   );
