@@ -53,7 +53,7 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
     const fetchOrderHistory = async () => {
       try {
         // Use the server action to get the order history
-        const orders = await getOrderHistoryAction(); // Fetch using server action
+        const orders = await getOrderHistoryAction(); 
         setOrderHistory(orders);
       } catch (error) {
         console.error("Error fetching order history:", error);
@@ -121,10 +121,10 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
 
   const handleClearOrders = async () => {
     try {
-      // Call the server action to clear all orders
+      
       const response = await clearOrderActions();
-      alert(response.message); // Show a success message
-      setOrderHistory([]); // Clear the order history on the client
+      alert(response.message);
+      setOrderHistory([]); 
     } catch (error) {
       console.error("Error clearing orders:", error);
       alert("Failed to clear orders.");

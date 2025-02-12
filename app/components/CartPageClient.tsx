@@ -14,10 +14,10 @@ const CartPageClient: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch cart data when the component mounts
+   
     const fetchCartData = async () => {
       try {
-        const cart = await getCartData(); // Ensure to await the promise
+        const cart = await getCartData();
         setCartItems(cart);
       } catch (error) {
         console.error("Error fetching cart data:", error);
@@ -33,7 +33,7 @@ const CartPageClient: React.FC = () => {
     const minQuantity = 1;
     const maxQuantity = 50;
 
-    // If not a number or out of bounds, show error
+    
     if (isNaN(numericValue)) {
       setError("Quantity must be a number.");
       return;
@@ -44,15 +44,15 @@ const CartPageClient: React.FC = () => {
       return;
     }
 
-    setError(null); // Clear error if quantity is valid
+    setError(null); 
 
     try {
-      // Update the cart with the new quantity
+      
       await updateCartAction(id, numericValue);
 
-      // Fetch updated cart data after update
+     
       const updatedCart = await getCartData();
-      setCartItems(updatedCart); // Update state to trigger re-render
+      setCartItems(updatedCart); 
     } catch (error) {
       console.error("Error updating quantity:", error);
       setError("Failed to update quantity.");
@@ -63,9 +63,9 @@ const CartPageClient: React.FC = () => {
     try {
       await removeItemAction(id);
 
-      // After removing, fetch updated cart
+      
       const updatedCart = await getCartData();
-      setCartItems(updatedCart); // Update state to trigger re-render
+      setCartItems(updatedCart);
     } catch (error) {
       console.error("Error removing item:", error);
       setError("Failed to remove item.");

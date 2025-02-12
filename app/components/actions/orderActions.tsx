@@ -9,9 +9,9 @@ type Order = {
     status: string;
   };
 
-let orderStorage: Order[] = [];  // Simulating a simple in-memory order storage
+let orderStorage: Order[] = [];  
 
-// Server action for creating an order
+
 export async function createOrderAction(cartItems: CartItem[], totalPrice: number) {
   return new Promise<Order>((resolve) => {
     const newOrder: Order = {
@@ -22,15 +22,15 @@ export async function createOrderAction(cartItems: CartItem[], totalPrice: numbe
       items: cartItems.map((item) => item.name),
     };
 
-    orderStorage.push(newOrder); // Save the order to in-memory storage
-    resolve(newOrder); // Return the created order
+    orderStorage.push(newOrder); 
+    resolve(newOrder); 
   });
 }
 
-// Server action for getting order history
+
 export async function getOrderHistoryAction() {
   return new Promise<Order[]>((resolve) => {
-    resolve(orderStorage); // Return the stored orders
+    resolve(orderStorage); 
   });
 }
 

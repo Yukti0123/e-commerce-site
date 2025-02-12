@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { getCartData, clearCartAction } from "./actions/cartActions"; // Assuming you have an API or server-side function to fetch the cart data
-import { createOrderAction } from "./actions/orderActions"; // Import the server action
+import { getCartData, clearCartAction } from "./actions/cartActions"; 
+import { createOrderAction } from "./actions/orderActions"; 
 import CartItem from "../Interfaces/CartItem";
 
 const CheckoutClient: React.FC = () => {
@@ -32,15 +32,15 @@ const CheckoutClient: React.FC = () => {
 
   const handleCheckout = async () => {
     try {
-      const order = await createOrderAction(cartItems, totalPrice); // Call the server action to create the order
+      const order = await createOrderAction(cartItems, totalPrice); 
 
-      // If order creation is successful, show the order and update the profile
+      
       alert("Checkout successful!");
       console.log("Order Created:", order);
        await clearCartAction();
        setCartItems([]);
        setTotalPrice(0);
-      // Optional: Redirect user or refresh the profile page
+      
     } catch (error) {
       console.error("Error during checkout:", error);
       setError("Error during checkout");
