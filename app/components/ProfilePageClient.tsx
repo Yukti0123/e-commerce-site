@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { getOrderHistoryAction, clearOrderActions } from "./actions/orderActions";
 
 type User = {
   id: number;
@@ -40,11 +41,7 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
   const [orderHistory, setOrderHistory] = useState<Order[]>([]);
   const [editedPaymentMethods, setEditedPaymentMethods] =
     useState<PaymentMethod[]>(paymentMethods);
-  const [newPaymentMethod, setNewPaymentMethod] = useState<{
-    type: string;
-    lastFour: string;
-    email: string;
-  }>({
+  const [newPaymentMethod, setNewPaymentMethod] = useState({
     type: "",
     lastFour: "",
     email: "",
@@ -55,12 +52,9 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
   useEffect(() => {
     const fetchOrderHistory = async () => {
       try {
-        const response = await fetch("/api/orders");
-        if (!response.ok) {
-          throw new Error("Failed to fetch order history");
-        }
-        const data = await response.json();
-        setOrderHistory(data);
+        // Use the server action to get the order history
+        const orders = await getOrderHistoryAction(); // Fetch using server action
+        setOrderHistory(orders);
       } catch (error) {
         console.error("Error fetching order history:", error);
       }
@@ -68,6 +62,7 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
 
     fetchOrderHistory();
   }, []);
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -126,19 +121,10 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
 
   const handleClearOrders = async () => {
     try {
-      const response = await fetch("/api/orders", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to clear orders from backend");
-      }
-
-      setOrderHistory([]);
-      alert("All orders have been cleared from your account.");
+      // Call the server action to clear all orders
+      const response = await clearOrderActions();
+      alert(response.message); // Show a success message
+      setOrderHistory([]); // Clear the order history on the client
     } catch (error) {
       console.error("Error clearing orders:", error);
       alert("Failed to clear orders.");

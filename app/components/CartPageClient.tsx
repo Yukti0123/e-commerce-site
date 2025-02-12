@@ -1,74 +1,75 @@
 "use client";
-import React, { useEffect, useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import CartItem from "../Interfaces/CartItem";
+import {
+  getCartData,
+  updateCartAction,
+  removeItemAction,
+} from "./actions/cartActions";
 import { redirect } from "next/navigation";
 
 const CartPageClient: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  
   useEffect(() => {
+    // Fetch cart data when the component mounts
     const fetchCartData = async () => {
       try {
-        const response = await fetch("/api/cart");
-        if (response.ok) {
-          const data = await response.json();
-          setCartItems(data);
-        } else {
-          console.error("Failed to fetch cart data");
-        }
+        const cart = await getCartData(); // Ensure to await the promise
+        setCartItems(cart);
       } catch (error) {
         console.error("Error fetching cart data:", error);
+        setError("Failed to fetch cart data.");
       }
     };
 
     fetchCartData();
   }, []);
 
-  
-  const persistCartData = async (cartItems: CartItem[]) => {
+  const handleQuantityChange = async (id: number, quantity: string) => {
+    const numericValue = parseInt(quantity);
+    const minQuantity = 1;
+    const maxQuantity = 50;
+
+    // If not a number or out of bounds, show error
+    if (isNaN(numericValue)) {
+      setError("Quantity must be a number.");
+      return;
+    }
+
+    if (numericValue < minQuantity || numericValue > maxQuantity) {
+      setError(`Quantity must be between ${minQuantity} and ${maxQuantity}.`);
+      return;
+    }
+
+    setError(null); // Clear error if quantity is valid
+
     try {
-      const response = await fetch("/api/cart", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(cartItems),
-      });
+      // Update the cart with the new quantity
+      await updateCartAction(id, numericValue);
 
-      if (response.ok) {
-        console.log("Cart data saved successfully!");
-      } else {
-        throw new Error("Failed to save cart data");
-      }
+      // Fetch updated cart data after update
+      const updatedCart = await getCartData();
+      setCartItems(updatedCart); // Update state to trigger re-render
     } catch (error) {
-      console.error("Error saving cart data:", error);
+      console.error("Error updating quantity:", error);
+      setError("Failed to update quantity.");
     }
   };
 
-  const removeFromCart = (id: number) => {
-    const updatedCart = cartItems.filter((item) => item.id !== id);
-    setCartItems(updatedCart);
-    persistCartData(updatedCart); 
-  };
+  const handleRemove = async (id: number) => {
+    try {
+      await removeItemAction(id);
 
-  const updateQuantity = (id: number, quantity: number) => {
-    if (quantity < 1) {
-      setError("Quantity cannot be less than 1.");
-      quantity = 1;
-    } else if (quantity > 50) {
-      setError("Quantity cannot be more than 50.");
-      quantity = 50;
-    } else {
-      setError(null);
+      // After removing, fetch updated cart
+      const updatedCart = await getCartData();
+      setCartItems(updatedCart); // Update state to trigger re-render
+    } catch (error) {
+      console.error("Error removing item:", error);
+      setError("Failed to remove item.");
     }
-
-    const updatedCart = cartItems.map((item) =>
-      item.id === id ? { ...item, quantity } : item
-    );
-    setCartItems(updatedCart);
-    persistCartData(updatedCart); 
   };
 
   const totalPrice = cartItems.reduce(
@@ -76,20 +77,12 @@ const CartPageClient: React.FC = () => {
     0
   );
 
-  const HandleProceedCheckout = () => {
+  const handleProceedCheckout = () => {
     redirect("/checkout");
   };
 
-  const HandleGoToDashboard = () => {
+  const handleGoToDashboard = () => {
     redirect("/");
-  };
-
-  const handleQuantityChange = (id: number, value: string) => {
-    const numericValue = parseInt(value);
-    if (isNaN(numericValue)) {
-      return;
-    }
-    updateQuantity(id, numericValue);
   };
 
   return (
@@ -115,7 +108,7 @@ const CartPageClient: React.FC = () => {
                   max="50"
                 />
               </p>
-              <button onClick={() => removeFromCart(item.id)}>Remove</button>
+              <button onClick={() => handleRemove(item.id)}>Remove</button>
             </div>
           ))}
           {error && (
@@ -128,8 +121,8 @@ const CartPageClient: React.FC = () => {
           </div>
         </>
       )}
-      <button onClick={HandleProceedCheckout}>Proceed to Checkout</button>
-      <button onClick={HandleGoToDashboard}>Back to Dashboard</button>
+      <button onClick={handleProceedCheckout}>Proceed to Checkout</button>
+      <button onClick={handleGoToDashboard}>Back to Dashboard</button>
     </div>
   );
 };

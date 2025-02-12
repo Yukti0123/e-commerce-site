@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { getCartData, clearCartAction } from "./actions/cartActions"; // Assuming you have an API or server-side function to fetch the cart data
+import { createOrderAction } from "./actions/orderActions"; // Import the server action
 import CartItem from "../Interfaces/CartItem";
 
 const CheckoutClient: React.FC = () => {
@@ -9,25 +11,19 @@ const CheckoutClient: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    
     const fetchCartData = async () => {
       try {
-        const response = await fetch("/api/cart"); 
-        if (response.ok) {
-          const data = await response.json();
-          setCartItems(data);
+        const cart = await getCartData();
+        setCartItems(cart);
 
-          const total = data.reduce(
-            (sum: number, item: CartItem) => sum + item.price * item.quantity,
-            0
-          );
-          setTotalPrice(total);
-        } else {
-          setError("Failed to fetch cart data");
-        }
+        const total = cart.reduce(
+          (sum: number, item: CartItem) => sum + item.price * item.quantity,
+          0
+        );
+        setTotalPrice(total);
       } catch (error) {
         console.error("Error fetching cart data:", error);
-        setError("Error fetching cart data");
+        setError("Error fetching cart data.");
       }
     };
 
@@ -35,40 +31,21 @@ const CheckoutClient: React.FC = () => {
   }, []);
 
   const handleCheckout = async () => {
-    const order = {
-      id: new Date().getTime(),
-      date: new Date().toISOString(),
-      total: totalPrice,
-      status: "Completed",
-      items: cartItems.map((item) => item.name),
-    };
-  
     try {
-      const response = await fetch("/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(order),
-      });
-  
-      if (response.ok) {
-        console.log("Order saved successfully!");
-        setCartItems([]);
-        setTotalPrice(0);
-        alert("Checkout successful!");
-  
-        
-      } else {
-        setError("Failed to place the order");
-        console.error("Failed to place the order");
-      }
+      const order = await createOrderAction(cartItems, totalPrice); // Call the server action to create the order
+
+      // If order creation is successful, show the order and update the profile
+      alert("Checkout successful!");
+      console.log("Order Created:", order);
+       await clearCartAction();
+       setCartItems([]);
+       setTotalPrice(0);
+      // Optional: Redirect user or refresh the profile page
     } catch (error) {
       console.error("Error during checkout:", error);
       setError("Error during checkout");
     }
   };
-  
 
   return (
     <div className="checkout">
@@ -77,15 +54,13 @@ const CheckoutClient: React.FC = () => {
         <p>Your cart is empty.</p>
       ) : (
         <>
-          <div>
-            {cartItems.map((item) => (
-              <div key={item.id}>
-                <p>{item.name}</p>
-                <p>Quantity: {item.quantity}</p>
-                <p>Price: ${item.price}</p>
-              </div>
-            ))}
-          </div>
+          {cartItems.map((item) => (
+            <div key={item.id}>
+              <p>{item.name}</p>
+              <p>Quantity: {item.quantity}</p>
+              <p>Price: ${item.price}</p>
+            </div>
+          ))}
           <h3>Total: ${totalPrice}</h3>
           {error && (
             <p className="error-message" style={{ color: "red" }}>
