@@ -3,19 +3,16 @@
 "use client";
 
 import React, { useState } from "react";
-import Product from "../Interfaces/Product";
+import Product from "../Types/Product";
 import { addToCartAction } from "./actions/cartActions";
-
 
 const AddToCartButton: React.FC<{ product: Product }> = ({ product }) => {
   const [error, setError] = useState<string | null>(null);
 
   const addToCart = async () => {
     try {
-     
       const cartItem = { ...product, quantity: 1 };
 
-    
       const updatedCart = await addToCartAction(cartItem);
 
       if (updatedCart) {

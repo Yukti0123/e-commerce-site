@@ -1,9 +1,9 @@
 // app/page.tsx
 import React from "react";
-import { fetchProducts, fetchCategories } from "@/app/utils/productData"; 
+import { fetchProducts, fetchCategories } from "@/app/utils/productData";
 import Filters from "./components/Filters";
 import ProductCard from "./components/ProductCard";
-import Product from "@/app/Interfaces/Product";
+import Product from "@/app/Types/Product";
 
 const DashboardPage = async ({
   searchParams,
@@ -19,7 +19,6 @@ const DashboardPage = async ({
   const products: Product[] = await fetchProducts();
   const categories: string[] = await fetchCategories();
 
- 
   let filteredProducts = products.filter(
     (product) =>
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

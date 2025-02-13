@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { getCartData, clearCartAction } from "./actions/cartActions"; 
-import { createOrderAction } from "./actions/orderActions"; 
-import CartItem from "../Interfaces/CartItem";
+import { getCartData, clearCartAction } from "./actions/cartActions";
+import { createOrderAction } from "./actions/orderActions";
+import CartItem from "../Types/CartItem";
 
 const CheckoutClient: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -32,15 +32,13 @@ const CheckoutClient: React.FC = () => {
 
   const handleCheckout = async () => {
     try {
-      const order = await createOrderAction(cartItems, totalPrice); 
+      const order = await createOrderAction(cartItems, totalPrice);
 
-      
       alert("Checkout successful!");
       console.log("Order Created:", order);
-       await clearCartAction();
-       setCartItems([]);
-       setTotalPrice(0);
-      
+      await clearCartAction();
+      setCartItems([]);
+      setTotalPrice(0);
     } catch (error) {
       console.error("Error during checkout:", error);
       setError("Error during checkout");

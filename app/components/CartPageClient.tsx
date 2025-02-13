@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import CartItem from "../Interfaces/CartItem";
+import CartItem from "../Types/CartItem";
 import {
   getCartData,
   updateCartAction,
@@ -14,7 +14,6 @@ const CartPageClient: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-   
     const fetchCartData = async () => {
       try {
         const cart = await getCartData();
@@ -33,7 +32,6 @@ const CartPageClient: React.FC = () => {
     const minQuantity = 1;
     const maxQuantity = 50;
 
-    
     if (isNaN(numericValue)) {
       setError("Quantity must be a number.");
       return;
@@ -44,15 +42,13 @@ const CartPageClient: React.FC = () => {
       return;
     }
 
-    setError(null); 
+    setError(null);
 
     try {
-      
       await updateCartAction(id, numericValue);
 
-     
       const updatedCart = await getCartData();
-      setCartItems(updatedCart); 
+      setCartItems(updatedCart);
     } catch (error) {
       console.error("Error updating quantity:", error);
       setError("Failed to update quantity.");
@@ -63,7 +59,6 @@ const CartPageClient: React.FC = () => {
     try {
       await removeItemAction(id);
 
-      
       const updatedCart = await getCartData();
       setCartItems(updatedCart);
     } catch (error) {

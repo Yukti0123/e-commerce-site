@@ -1,28 +1,30 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+
 import AddToCartButton from "../components/AddToCart";
-import Product from "../Interfaces/Product";
+import Product from "../Types/Product";
+import { redirect } from "next/dist/server/api-utils";
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
-  const imageUrl = product.images[0]; 
+  const imageUrl = product.images[0];
 
-  const validImageUrl = imageUrl
-    ?.replace(/[\[\]"]+/g, '') 
-    .replace(/ /g, '%20'); 
+  const validImageUrl = imageUrl?.replace(/[\[\]"]+/g, "").replace(/ /g, "%20");
 
+  const imageSrc =
+    validImageUrl &&
+    (validImageUrl.startsWith("http") || validImageUrl.startsWith("https"))
+      ? validImageUrl
+      : "/images/default-image.png";
 
-  const imageSrc = validImageUrl && (validImageUrl.startsWith('http') || validImageUrl.startsWith('https'))
-    ? validImageUrl
-    : '/images/default-image.png';  
+      
 
   return (
     <div className="card">
       <div className="image-container">
-        
         <Image
           src={imageSrc}
-          alt={product.name} 
+          alt={product.name}
           width={300}
           height={200}
           style={{ objectFit: "cover" }}
@@ -38,7 +40,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         {/* Button Container */}
         <div className="button-container">
           <Link href={`/product/${product.id}`} passHref>
-            <button className="view-detail-btn">View Detail</button>
+            <button className="view-detail-btn" >View Detail</button>
           </Link>
 
           <AddToCartButton product={product} />

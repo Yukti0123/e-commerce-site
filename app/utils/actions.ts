@@ -3,7 +3,7 @@
 "use server";
 
 import { fetchProducts } from "./productData";
-import Product from "../Interfaces/Product";
+import Product from "../Types/Product";
 
 export const getData = async (): Promise<Product[]> => {
   return await fetchProducts(); 

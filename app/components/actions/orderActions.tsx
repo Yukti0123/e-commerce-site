@@ -1,18 +1,20 @@
 // app/actions/orderActions.ts
-import CartItem from "@/app/Interfaces/CartItem";
+import CartItem from "@/app/Types/CartItem";
 
 type Order = {
-    items: string[];
-    id: number;
-    date: string;
-    total: number;
-    status: string;
-  };
+  items: string[];
+  id: number;
+  date: string;
+  total: number;
+  status: string;
+};
 
-let orderStorage: Order[] = [];  
+let orderStorage: Order[] = [];
 
-
-export async function createOrderAction(cartItems: CartItem[], totalPrice: number) {
+export async function createOrderAction(
+  cartItems: CartItem[],
+  totalPrice: number
+) {
   return new Promise<Order>((resolve) => {
     const newOrder: Order = {
       id: Date.now(),
@@ -22,19 +24,18 @@ export async function createOrderAction(cartItems: CartItem[], totalPrice: numbe
       items: cartItems.map((item) => item.name),
     };
 
-    orderStorage.push(newOrder); 
-    resolve(newOrder); 
+    orderStorage.push(newOrder);
+    resolve(newOrder);
   });
 }
 
-
 export async function getOrderHistoryAction() {
   return new Promise<Order[]>((resolve) => {
-    resolve(orderStorage); 
+    resolve(orderStorage);
   });
 }
 
 export async function clearOrderActions() {
-    orderStorage = [];
-    return { message: "All orders have been cleared."};
+  orderStorage = [];
+  return { message: "All orders have been cleared." };
 }

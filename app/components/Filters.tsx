@@ -4,7 +4,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 
-interface FiltersProps {
+type FiltersProps = {
   selectedCategory: string;
   sortOption: string;
   categories: string[];
