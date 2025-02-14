@@ -38,16 +38,19 @@ const DashboardPage = async ({
   }
 
   return (
-    <div className="container">
+    <div className="max-w-screen-xl mx-auto p-5">
       <Filters
         selectedCategory={selectedCategory}
         sortOption={sortOption}
         categories={categories}
       />
 
-      <div className="product-list">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6">
         {filteredProducts.map((product) => (
-          <div key={product.id} className="product-card">
+          <div
+            key={product.id}
+            className="product-card bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+          >
             <ProductCard product={product} />
           </div>
         ))}

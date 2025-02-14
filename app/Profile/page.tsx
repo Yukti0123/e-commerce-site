@@ -21,8 +21,8 @@ const ProfilePage: React.FC = async () => {
   ];
 
   return (
-    <div className="profile-container">
-      <h1>User Profile</h1>
+    <div>
+      
       <ProfilePageClient
         user={user}
         orderHistory={orderHistory} 

@@ -26,7 +26,10 @@ const AddToCartButton: React.FC<{ product: Product }> = ({ product }) => {
 
   return (
     <div>
-      <button onClick={addToCart} className="add-to-cart-button">
+      <button
+        onClick={addToCart}
+        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+      >
         Add to Cart
       </button>
       {error && <p style={{ color: "red" }}>{error}</p>}

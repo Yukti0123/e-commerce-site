@@ -81,43 +81,86 @@ const CartPageClient: React.FC = () => {
   };
 
   return (
-    <div className="cart-items">
-      <h3>Your Order</h3>
-      {cartItems.length === 0 ? (
-        <p>Your cart is empty.</p>
-      ) : (
-        <>
-          {cartItems.map((item) => (
-            <div key={`${item.id}-${item.name}`} className="cart-item">
-              <p>{item.name}</p>
-              <p>Price: ${item.price}</p>
-              <p>
-                Quantity:{" "}
-                <input
-                  type="number"
-                  value={item.quantity}
-                  onChange={(e) =>
-                    handleQuantityChange(item.id, e.target.value)
-                  }
-                  min="1"
-                  max="50"
-                />
+    <div className="max-w-screen-lg mx-auto p-6">
+      <h3 className="text-2xl font-semibold text-gray-800 text-center mb-6">
+        Your Order
+      </h3>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-gray-300 pb-4 mb-6">
+        {cartItems.length === 0 ? (
+          <p className="text-gray-600 text-center">Your cart is empty.</p>
+        ) : (
+          <div className="space-y-4 w-full">
+            {cartItems.map((item) => (
+              <div
+                key={`${item.id}-${item.name}`}
+                className="flex flex-col sm:flex-row sm:justify-between p-4 bg-gray-50 rounded-lg shadow-md"
+              >
+                <div className="flex flex-col flex-1">
+                  <p className="text-lg font-medium text-gray-800">
+                    {item.name}
+                  </p>
+                  <p className="text-sm text-gray-500">Price: ${item.price}</p>
+                </div>
+
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    <label
+                      htmlFor={`quantity-${item.id}`}
+                      className="text-sm text-gray-600"
+                    >
+                      Quantity:
+                    </label>
+                    <input
+                      id={`quantity-${item.id}`}
+                      type="number"
+                      value={item.quantity}
+                      onChange={(e) =>
+                        handleQuantityChange(item.id, e.target.value)
+                      }
+                      min="1"
+                      max="50"
+                      className="w-16 p-2 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <button
+                    onClick={() => handleRemove(item.id)}
+                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:ring-2 focus:ring-red-500"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))}
+
+            {error && (
+              <p className="text-red-600 text-center mt-4 font-medium">
+                {error}
               </p>
-              <button onClick={() => handleRemove(item.id)}>Remove</button>
+            )}
+
+            <div className="mt-6 p-5 bg-gray-100 rounded-lg shadow-md">
+              <h3 className="text-xl font-semibold text-gray-800">
+                Total Price: ${totalPrice}
+              </h3>
             </div>
-          ))}
-          {error && (
-            <p className="error-message" style={{ color: "red" }}>
-              {error}
-            </p>
-          )}
-          <div className="cart-summary">
-            <h3>Total Price: ${totalPrice}</h3>
           </div>
-        </>
-      )}
-      <button onClick={handleProceedCheckout}>Proceed to Checkout</button>
-      <button onClick={handleGoToDashboard}>Back to Dashboard</button>
+        )}
+      </div>
+      <div className="mt-6 flex justify-between gap-4 sm:flex-row sm:gap-6">
+        <button
+          onClick={handleProceedCheckout}
+          className="w-full sm:w-auto px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500"
+        >
+          Proceed to Checkout
+        </button>
+        <button
+          onClick={handleGoToDashboard}
+          className="w-full sm:w-auto px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-700 focus:ring-2 focus:ring-gray-500"
+        >
+          Back to Dashboard
+        </button>
+      </div>
     </div>
   );
 };

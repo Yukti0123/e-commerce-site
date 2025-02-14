@@ -1,6 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { getOrderHistoryAction, clearOrderActions } from "./actions/orderActions";
+import {
+  getOrderHistoryAction,
+  clearOrderActions,
+} from "./actions/orderActions";
 
 type User = {
   id: number;
@@ -52,8 +55,8 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
   useEffect(() => {
     const fetchOrderHistory = async () => {
       try {
-        // Use the server action to get the order history
-        const orders = await getOrderHistoryAction(); 
+        
+        const orders = await getOrderHistoryAction();
         setOrderHistory(orders);
       } catch (error) {
         console.error("Error fetching order history:", error);
@@ -62,7 +65,6 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
 
     fetchOrderHistory();
   }, []);
-
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -121,10 +123,9 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
 
   const handleClearOrders = async () => {
     try {
-      
       const response = await clearOrderActions();
       alert(response.message);
-      setOrderHistory([]); 
+      setOrderHistory([]);
     } catch (error) {
       console.error("Error clearing orders:", error);
       alert("Failed to clear orders.");
@@ -132,26 +133,33 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
   };
 
   return (
-    <div className="profile-page">
-      <div className="profile-info">
-        <h2>Profile Info</h2>
+    <div>
+      {/* Profile Info Section */}
+      <div className="p-6 max-w-screen-xl mx-auto bg-white shadow-lg rounded-lg mb-10">
+        <h2 className="text-3xl font-semibold text-gray-800 mb-6">
+          Profile Info
+        </h2>
         <form onSubmit={(e) => e.preventDefault()}>
           {Object.entries(updatedUser).map(([key, value]) => (
-            <div key={key}>
-              <label>{key.charAt(0).toUpperCase() + key.slice(1)}</label>
+            <div key={key} className="mb-6">
+              <label className="block text-xl font-medium text-gray-700 mb-2">
+                {key.charAt(0).toUpperCase() + key.slice(1)}
+              </label>
               {isEditable ? (
                 <input
+                  className="w-full max-w-md p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
                   type={key === "email" ? "email" : "text"}
                   name={key}
                   value={value || ""}
                   onChange={handleInputChange}
                 />
               ) : (
-                <p>{value || "N/A"}</p>
+                <p className="text-lg text-gray-600">{value || "N/A"}</p>
               )}
             </div>
           ))}
           <button
+            className="w-full max-w-md py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out"
             type="button"
             onClick={isEditable ? handleSaveChanges : () => setIsEditable(true)}
           >
@@ -160,123 +168,171 @@ const ProfilePageClient: React.FC<ProfilePageClientProps> = ({
         </form>
       </div>
 
-      <div className="order-history">
-        <h2>Order History</h2>
+      {/* Order History Section */}
+      <div className="bg-white shadow-lg rounded-lg p-6 mb-10">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-5">
+          Order History
+        </h2>
         {orderHistory.length === 0 ? (
-          <p>No orders found.</p>
+          <p className="text-lg text-gray-500">No orders found.</p>
         ) : (
-          <ul>
+          <ul className="space-y-4">
             {orderHistory.map((order) => (
-              <li key={order.id}>
-                <p>
-                  <strong>Date:</strong> {order.date}
+              <li
+                key={order.id}
+                className="p-5 bg-gray-100 rounded-lg shadow-md hover:bg-gray-200 transition duration-200 ease-in-out"
+              >
+                <p className="text-lg text-gray-700">
+                  <span className="font-bold">Date:</span> {order.date}
                 </p>
-                <p>
-                  <strong>Total:</strong> ${order.total}
+                <p className="text-lg text-gray-700">
+                  <span className="font-bold">Total:</span> ${order.total}
                 </p>
-                <p>
-                  <strong>Status:</strong> {order.status}
+                <p className="text-lg text-gray-700">
+                  <span className="font-bold">Status:</span> {order.status}
                 </p>
-                <p>
-                  <strong>Items:</strong> {order.items.join(", ")}
+                <p className="text-lg text-gray-700">
+                  <span className="font-bold">Items:</span>{" "}
+                  {order.items.join(", ")}
                 </p>
               </li>
             ))}
           </ul>
         )}
-        <button type="button" onClick={handleClearOrders}>
+        <button
+          type="button"
+          onClick={handleClearOrders}
+          className="mt-5 px-5 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300 ease-in-out"
+        >
           Clear All Orders
         </button>
       </div>
 
       {/* Add Payment Method Section */}
-      <div className="add-payment-method">
-        <h2>Add Payment Method</h2>
-        <div>
-          <label>Payment Type</label>
-          <select
-            value={newPaymentMethod.type}
-            onChange={(e) =>
-              setNewPaymentMethod({ ...newPaymentMethod, type: e.target.value })
-            }
-          >
-            <option value="">Select Payment Type</option>
-            <option value="Credit Card">Credit Card</option>
-            <option value="PayPal">PayPal</option>
-          </select>
-        </div>
-        {newPaymentMethod.type === "Credit Card" && (
-          <div>
-            <label>Last Four Digits</label>
-            <input
-              type="text"
-              value={newPaymentMethod.lastFour}
-              onChange={(e) =>
-                setNewPaymentMethod({
-                  ...newPaymentMethod,
-                  lastFour: e.target.value,
-                })
-              }
-            />
-          </div>
-        )}
-        {newPaymentMethod.type === "PayPal" && (
-          <div>
-            <label>PayPal Email</label>
-            <input
-              type="email"
-              value={newPaymentMethod.email}
-              onChange={(e) =>
-                setNewPaymentMethod({
-                  ...newPaymentMethod,
-                  email: e.target.value,
-                })
-              }
-            />
-          </div>
-        )}
-        <button type="button" onClick={handleAddPaymentMethod}>
+      <div className="bg-white shadow-lg rounded-lg p-6 mb-10">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-5">
           Add Payment Method
-        </button>
+        </h2>
+        <div className="space-y-4">
+          <div className="w-full p-3 border border-gray-300 rounded-lg mb-4">
+            <label className="text-lg text-gray-700 mb-2">Payment Type</label>
+            <select
+              value={newPaymentMethod.type}
+              onChange={(e) =>
+                setNewPaymentMethod({
+                  ...newPaymentMethod,
+                  type: e.target.value,
+                })
+              }
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            >
+              <option value="">Select Payment Type</option>
+              <option value="Credit Card">Credit Card</option>
+              <option value="PayPal">PayPal</option>
+            </select>
+          </div>
+
+          {newPaymentMethod.type === "Credit Card" && (
+            <div>
+              <label className="block text-lg text-gray-700 mb-2">
+                Last Four Digits
+              </label>
+              <input
+                type="text"
+                value={newPaymentMethod.lastFour}
+                onChange={(e) =>
+                  setNewPaymentMethod({
+                    ...newPaymentMethod,
+                    lastFour: e.target.value,
+                  })
+                }
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              />
+            </div>
+          )}
+
+          {newPaymentMethod.type === "PayPal" && (
+            <div>
+              <label className="block text-lg text-gray-700 mb-2">
+                PayPal Email
+              </label>
+              <input
+                type="email"
+                value={newPaymentMethod.email}
+                onChange={(e) =>
+                  setNewPaymentMethod({
+                    ...newPaymentMethod,
+                    email: e.target.value,
+                  })
+                }
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              />
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={handleAddPaymentMethod}
+            className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300 ease-in-out"
+          >
+            Add Payment Method
+          </button>
+        </div>
       </div>
 
       {/* Payment Methods Section */}
-      <div className="payment-methods">
-        <h2>Payment Methods</h2>
+      <div>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-5">
+          Payment Methods
+        </h2>
         {editedPaymentMethods.map((payment, index) => (
-          <div key={payment.id} className="payment-method-item">
+          <div
+            key={payment.id}
+            className="p-5 mb-4 bg-gray-100 rounded-lg shadow-md hover:bg-gray-200 transition duration-200 ease-in-out"
+          >
             <div>
-              <label>Type</label>
+              <label className="text-lg text-gray-700 mb-2">Type</label>
               <input
                 type="text"
                 name="type"
                 value={payment.type}
                 onChange={(e) => handlePaymentInputChange(e, index)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
               />
             </div>
             {payment.type === "Credit Card" && (
               <div>
-                <label>Last Four Digits</label>
+                <label className="text-lg text-gray-700 mb-2">
+                  Last Four Digits
+                </label>
                 <input
                   type="text"
                   name="lastFour"
                   value={payment.lastFour || ""}
                   onChange={(e) => handlePaymentInputChange(e, index)}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
                 />
               </div>
             )}
             {payment.type === "PayPal" && (
               <div>
-                <label>PayPal Email</label>
+                <label className="text-lg text-gray-700 mb-2">
+                  PayPal Email
+                </label>
                 <input
                   type="email"
                   name="email"
                   value={payment.email || ""}
                   onChange={(e) => handlePaymentInputChange(e, index)}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
                 />
               </div>
             )}
-            <button type="button" onClick={handleSavePaymentMethods}>
+            <button
+              type="button"
+              onClick={handleSavePaymentMethods}
+              className="mt-3 px-5 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out"
+            >
               Save Payment Method
             </button>
           </div>
